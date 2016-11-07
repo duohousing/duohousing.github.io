@@ -152,12 +152,12 @@
           </div>
         </div>
         <div class="col-md-5">
-          <form action="#" class="contact-form row">
+          <form action="#" class="row" id="contact_form" name="contact_form" method="POST">
             <p class="col-md-12">
               <input type="text" name="name" placeholder="Name">
             </p>
             <p class="col-md-12">
-              <input type="email" name="email" placeholder="E-mail" required>
+              <input class="required" type="email" name="email" placeholder="E-mail">
             </p>
             <p class="col-md-12">
               <input type="tel" name="phone" placeholder="Telephone">
@@ -230,7 +230,50 @@
 </div><!-- /.boxed-view -->
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.15.0/jquery.validate.min.js"></script>
 <script src="js/plugins.js"></script>
 <script src="js/options.js"></script>
+<script>
+  $(function() {
+    $("#contact_form").validate({
+      rules: {
+        name: "required",
+        email: {
+          required: true,
+          email: true
+        },
+        message: {
+          required: true,
+          minlength: 5
+        }
+      },
+      messages: {
+        name: "Please enter your name",
+        email: "Please enter a valid email address",
+        message: "Please enter message to DUO Housing",
+      },
+
+      invalidHandler: function(event, validator) {
+        return false;
+      },
+
+      submitHandler: function (form) {
+        console.log('valid');
+        $.ajax({
+          url: "//formspree.io/bozidar.dangubic@gmail.com",
+          method: "POST",
+          data: $(form).serialize(),
+          dataType: "json",
+          success: function (data) {
+            $("form#contact_form :input").prop("disabled", true);
+            var result = $(form).find('.tt-notice');
+            result.text('Thanks. Your message has been sent.');
+          }
+        });
+        return false;
+      }
+    });
+  });
+</script>
 </body>
 </html>
