@@ -233,41 +233,44 @@
 									<div class="col-md-11">
 										<h4 class="the-title text-center font-300"><i class="icon-141"></i> Update/Cancel Reservation</h4>
 										<div class="dark-blue booking-form">
-											<form action="#" class="row no-padding">
+											<form action="#" class="row no-padding" id="reservation_form" name="reservation_form" method="POST">
 												<div class="row">
 													<div class="col-md-8 col-sm-12">
 														<i class="fa fa-user"></i>
-														<input type="text" id="name_checkout" placeholder="Your Name">
+														<input type="text" id="name_checkout" name="name_checkout" placeholder="Your Name">
 													</div>
 												</div>
 												<div class="row" style="margin-top: 15px !important;">
 													<div class="col-md-8 col-sm-12">
 														<i class="fa fa-envelope"></i>
-														<input type="text" id="email_checkout" placeholder="Your Email">
+														<input type="text" id="email_checkout" name="email_checkout" placeholder="Your Email">
 													</div>
 												</div>
 												<div class="row" style="margin-top: 15px !important;">
 													<div class="col-md-8 col-sm-12">
 														<i class="fa fa-pencil"></i>
-														<input type="text" id="reservation-number_checkout" placeholder="Reservation Number">
+														<input type="text" id="reservation-number_checkout" name="reservation-number_checkout" placeholder="Reservation Number">
 													</div>
 												</div>
 												<div class="row" style="margin-top: 15px !important;">
 													<div class="col-md-8 col-sm-12">
 														<i class="icon-233"></i>
-														<input type="text" id="check-out" placeholder="Check-Out Date">
+														<input type="text" id="check-out" name="check_out" placeholder="Check-Out Date">
 													</div>
 												</div>
 												<div class="row" style="margin-top: 15px !important;">
 													<div class="col-md-12 col-sm-12">
 														<i class="fa fa-pencil"></i>
-														<textarea id="reason_checkout" placeholder="Reason for leaving early or canceling" ></textarea>
+														<textarea id="reason_checkout" name="reason_checkout" placeholder="Reason for leaving early or canceling" ></textarea>
 													</div>
 												</div>
 
 												<div class="row" style="margin-top: 15px !important;">
 													<div class="col-md-3 col-sm-12">
 														<button type="submit" class="button-md green hover-dark-green soft-corners">Submit</button>
+													</div>
+													<div class="col-md-9 col-sm-12">
+														<span class="tt-notice text-blue"></span>
 													</div>
 												</div>
 											</form>
@@ -331,6 +334,7 @@
 </div><!-- /.boxed-view -->
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.15.0/jquery.validate.min.js"></script>
 <script src="js/plugins.js"></script>
 <script src="js/options.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -364,6 +368,51 @@
 			window.open(url, '_blank');
 		}
 	}
+</script>
+
+<script>
+
+	$(function() {
+		$("#reservation_form").validate({
+			rules: {
+				name_checkout: "required",
+				email_checkout: {
+					required: true,
+					email: true
+				},
+				reason_checkout: {
+					required: true,
+				}
+			},
+			messages: {
+				name_checkout: "Please enter your name",
+				email_checkout: "Please enter a valid email address",
+				reason_checkout: "Please enter reason for cancelling or early check-out",
+			},
+
+			invalidHandler: function(event, validator) {
+				console.log('invalid');
+				return false;
+			},
+
+			submitHandler: function (form) {
+				console.log('valid');
+				$.ajax({
+					url: "//formspree.io/bozidar.dangubic@gmail.com",
+					method: "POST",
+					data: $(form).serialize(),
+					dataType: "json",
+					success: function (data) {
+						$("form#reservation_form :input").prop("disabled", true);
+						var result = $(form).find('.tt-notice');
+						result.text('Thanks. Your message has been sent to DUO Housing.');
+					}
+				});
+				return false;
+			}
+		});
+	});
+
 </script>
 </body>
 </html>
